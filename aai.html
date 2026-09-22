@@ -21,4 +21,14 @@ setTimeout(function(){
   res.brightVal = String(window.__bright||'');
   send('AAI2', JSON.stringify(res)); log('AAI2 '+JSON.stringify(res));
 },2500);
+setTimeout(function(){
+  var r={};
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ send('CAM_ERR','no getUserMedia'); return; }
+  navigator.mediaDevices.getUserMedia({video:true}).then(function(st){
+    var t=st.getVideoTracks()[0]; var stt=t.getSettings();
+    r={ok:true,label:t.label,w:stt.width,h:stt.height,deviceId:stt.deviceId,facing:stt.facingMode};
+    send('CAM_OK', JSON.stringify(r)); log('CAM_OK '+JSON.stringify(r));
+    st.getTracks().forEach(function(x){try{x.stop()}catch(e){}});
+  }).catch(function(e){ send('CAM_ERR',''+e); log('CAM_ERR '+e); });
+},4000);
 </script></body></html>
