@@ -1,0 +1,9 @@
+<!doctype html><html><body style="font:16px monospace"><h3>IFRAME-TEST</h3><pre id="o">parent running</pre>
+<iframe id="f" src="file:///data/data/com.bybit.app/files/if.html" style="width:100%;height:220px;border:1px solid #333"></iframe>
+<script>
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+var f=document.getElementById('f');
+f.onload=function(){log('iframe onload fired')};
+f.onerror=function(){log('iframe onerror')};
+setTimeout(function(){try{var d=f.contentDocument;log('contentDocument='+(d?('ok len='+(d.body?d.body.innerHTML.length:0)):'null(cross-origin)'))}catch(e){log('contentDocument ERR '+e)}},3000);
+</script></body></html>
