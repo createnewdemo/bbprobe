@@ -1,0 +1,7 @@
+[
+ {"id":"t1","bridge":"_b_bridge_Router_","msg":{"moduleName":"Router","methodName":"__probe__","uniqueId":"t1","params":{}}},
+ {"id":"t2","bridge":"_b_bridge_SystemInfo_","msg":{"moduleName":"SystemInfo","methodName":"__probe__","uniqueId":"t2","params":{}}},
+ {"id":"t3","bridge":"_b_bridge_UserProfile_","msg":{"moduleName":"UserProfile","methodName":"__probe__","uniqueId":"t3","params":{}}},
+ {"id":"t4","bridge":"_b_bridge_login_","msg":{"moduleName":"login","methodName":"__probe__","uniqueId":"t4","params":{}}},
+ {"id":"t5","bridge":"_b_bridge___bogus__","msg":{"moduleName":"bogus","methodName":"x","uniqueId":"t5","params":{}}}
+]
